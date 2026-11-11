@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        Apply the saved theme in <head>, before the page is painted, so the
+        backend never flashes the default colours while the JS bundle loads.
+    -->
+    <template id="webclient_bootstrap_xet_theme" inherit_id="web.webclient_bootstrap">
+        <xpath expr="//t[@t-set='head']/script" position="after">
+            <script type="text/javascript">
+                {
+                    const info = odoo.__session_info__ || {};
+                    const pref = info.xet_theme;
+                    if (pref) {
+                        let theme = pref;
+                        if (pref === "system") {
+                            theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+                                ? "dark_blue"
+                                : "light";
+                        }
+                        if (["dark_blue", "light", "graphite"].indexOf(theme) === -1) {
+                            theme = "dark_blue";
+                        }
+                        document.documentElement.dataset.xetThemePref = pref;
+                        document.documentElement.dataset.xetTheme = theme;
+                    }
+                }
+            </script>
+        </xpath>
+    </template>
+
+</odoo>

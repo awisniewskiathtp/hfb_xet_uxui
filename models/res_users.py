@@ -1,28 +1,32 @@
-from odoo import fields, models
+from odoo import api, fields, models
+from odoo.exceptions import ValidationError
+
+XET_THEME_SELECTION = [
+    ("dark_blue", "Dark Blue"),
+    ("light", "Light"),
+    ("graphite", "Graphite"),
+    ("system", "Follow system"),
+]
+XET_DEFAULT_THEME = "dark_blue"
 
 
 class ResUsers(models.Model):
     _inherit = "res.users"
 
     xet_theme = fields.Selection(
-        selection=[
-            ("dark_blue", "Dark Blue"),
-            ("light", "Light"),
-            ("graphite", "Graphite"),
-        ],
+        selection=XET_THEME_SELECTION,
         string="XET UI Theme",
-        default="dark_blue",
+        default=XET_DEFAULT_THEME,
         required=True,
+        user_writeable=True,
+        help="Backend colour theme. 'Follow system' uses the operating "
+             "system light/dark setting.",
     )
 
-    def get_xet_theme(self):
-        """Return the current user's theme without exposing other users' data."""
-        return self.env.user.xet_theme or "dark_blue"
-
+    @api.model
     def set_xet_theme(self, theme):
-        """Update only the current user's theme preference."""
-        allowed = {"dark_blue", "light", "graphite"}
-        if theme not in allowed:
-            return {"success": False, "error": "invalid_theme"}
+        """Store the theme preference of the current user only."""
+        if theme not in dict(XET_THEME_SELECTION):
+            raise ValidationError(self.env._("Unsupported XET UI theme: %s", theme))
         self.env.user.write({"xet_theme": theme})
-        return {"success": True, "theme": theme}
+        return theme
