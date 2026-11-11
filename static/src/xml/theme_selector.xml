@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hfb_xet_uxui.ThemeSelector">
+        <div class="o_xet_theme_selector d-flex align-items-center px-2"
+             title="XET Base UX/UI theme">
+            <i class="fa fa-paint-brush me-1" aria-hidden="true"/>
+            <select class="form-select form-select-sm"
+                    aria-label="XET UI theme"
+                    t-att-value="state.theme"
+                    t-att-disabled="state.saving"
+                    t-on-change="onThemeChange">
+                <option value="dark_blue">Dark Blue</option>
+                <option value="light">Light</option>
+                <option value="graphite">Graphite</option>
+            </select>
+        </div>
+    </t>
+</templates>

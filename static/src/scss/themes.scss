@@ -1,0 +1,111 @@
+// XET Base UX/UI - experimental global backend theme layer.
+// This prototype intentionally limits styling to common backend surfaces.
+// More specific Odoo component adaptations should be added after visual QA.
+
+:root {
+    --xet-bg-main: #f2f5f9;
+    --xet-bg-panel: #ffffff;
+    --xet-bg-card: #ffffff;
+    --xet-text: #25364a;
+    --xet-muted: #64748b;
+    --xet-accent: #087fae;
+    --xet-border: #d5e0e9;
+}
+
+:root[data-xet-theme="dark_blue"] {
+    color-scheme: dark;
+    --xet-bg-main: #071b2d;
+    --xet-bg-panel: #0d2940;
+    --xet-bg-card: #123650;
+    --xet-text: #f2f7fc;
+    --xet-muted: #b4c5d4;
+    --xet-accent: #00c8ed;
+    --xet-border: #24516b;
+}
+
+:root[data-xet-theme="light"] {
+    color-scheme: light;
+    --xet-bg-main: #f2f5f9;
+    --xet-bg-panel: #ffffff;
+    --xet-bg-card: #ffffff;
+    --xet-text: #25364a;
+    --xet-muted: #64748b;
+    --xet-accent: #087fae;
+    --xet-border: #d5e0e9;
+}
+
+:root[data-xet-theme="graphite"] {
+    color-scheme: dark;
+    --xet-bg-main: #202328;
+    --xet-bg-panel: #292e35;
+    --xet-bg-card: #333a43;
+    --xet-text: #e8edf2;
+    --xet-muted: #b2bac4;
+    --xet-accent: #20c6bb;
+    --xet-border: #48515b;
+}
+
+// Initial backend-wide surface mapping. Odoo component-specific selectors
+// will need refinement against the exact Odoo 20.0 build.
+:root[data-xet-theme] {
+    .o_web_client {
+        color: var(--xet-text);
+    }
+
+    .o_web_client .o_main,
+    .o_web_client .o_action_manager,
+    .o_web_client .o_content {
+        background-color: var(--xet-bg-main);
+        color: var(--xet-text);
+    }
+
+    .o_web_client .o_main_navbar,
+    .o_web_client .o_menu_systray,
+    .o_web_client .o_control_panel {
+        background-color: var(--xet-bg-panel);
+        color: var(--xet-text);
+        border-color: var(--xet-border);
+    }
+
+    .o_web_client .o_form_view,
+    .o_web_client .o_list_view,
+    .o_web_client .o_kanban_view,
+    .o_web_client .o_search_panel {
+        color: var(--xet-text);
+    }
+
+    .o_web_client .o_form_view .o_form_sheet_bg,
+    .o_web_client .o_form_view .o_form_sheet,
+    .o_web_client .o_kanban_record,
+    .o_web_client .o_list_renderer,
+    .o_web_client .o_search_panel {
+        background-color: var(--xet-bg-card);
+        color: var(--xet-text);
+        border-color: var(--xet-border);
+    }
+
+    .o_web_client .btn-primary {
+        background-color: var(--xet-accent);
+        border-color: var(--xet-accent);
+    }
+
+    .o_web_client a,
+    .o_web_client .o_menu_entry_lvl_1.active {
+        color: var(--xet-accent);
+    }
+
+    .o_web_client input,
+    .o_web_client textarea,
+    .o_web_client select,
+    .o_web_client .o_input {
+        border-color: var(--xet-border);
+    }
+}
+
+.o_xet_theme_selector {
+    select {
+        min-width: 112px;
+        max-width: 130px;
+        cursor: pointer;
+    }
+}
