@@ -1,7 +1,7 @@
 {
     "name": "XET Base UX/UI",
     "summary": "Experimental backend theme switcher (user menu) for Odoo 20.0",
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.2.0",
     "category": "Productivity",
     "license": "LGPL-3",
     "author": "XET Base",

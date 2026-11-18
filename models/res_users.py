@@ -1,11 +1,11 @@
 from odoo import api, fields, models
 from odoo.exceptions import ValidationError
 
+# Palettes for Odoo's dark mode. Light/dark/system is decided by the Odoo
+# (Enterprise) user theme setting; in light mode the Light palette is used.
 XET_THEME_SELECTION = [
     ("dark_blue", "Dark Blue"),
-    ("light", "Light"),
     ("graphite", "Graphite"),
-    ("system", "Follow system"),
 ]
 XET_DEFAULT_THEME = "dark_blue"
 
@@ -19,8 +19,9 @@ class ResUsers(models.Model):
         default=XET_DEFAULT_THEME,
         required=True,
         user_writeable=True,
-        help="Backend colour theme. 'Follow system' uses the operating "
-             "system light/dark setting.",
+        help="Palette used when the Odoo theme is dark. Light, dark or "
+             "system mode is chosen in the Odoo theme setting; in light "
+             "mode the Light palette is always used.",
     )
 
     @api.model

@@ -5,32 +5,34 @@ import { useService } from "@web/core/utils/hooks";
 import {
     getThemePreference,
     setThemePreference,
+    xetMode,
     xetThemeEnabled,
-    XET_PREFERENCES,
+    XET_DARK_THEMES,
 } from "./theme";
 
 /**
- * Theme choice in the user (avatar) menu: one entry per preference, the active
- * one marked with a check. Placed between "My Preferences" (50) and
+ * Dark palette choice in the user (avatar) menu: one entry per palette, the
+ * active one marked with a check. Shown only in Odoo's dark mode - in light
+ * mode the Light palette is fixed. Placed between "My Preferences" (50) and
  * "Install App" (65) / "Log out" (70).
  */
 
 const LABELS = {
     dark_blue: _t("Dark Blue"),
-    light: _t("Light"),
     graphite: _t("Graphite"),
-    system: _t("Follow system"),
 };
+
+const showThemeItems = xetThemeEnabled && xetMode === "dark";
 
 const userMenuRegistry = registry.category("user_menuitems");
 
 userMenuRegistry.add("xet_theme_separator", () => ({
     type: "separator",
-    hide: !xetThemeEnabled,
+    hide: !showThemeItems,
     sequence: 55,
 }));
 
-XET_PREFERENCES.forEach((pref, index) => {
+XET_DARK_THEMES.forEach((pref, index) => {
     userMenuRegistry.add(`xet_theme_${pref}`, () => {
         const notification = useService("notification");
         const isActive = getThemePreference() === pref;
@@ -39,7 +41,7 @@ XET_PREFERENCES.forEach((pref, index) => {
         return {
             type: "item",
             id: `xet_theme_${pref}`,
-            hide: !xetThemeEnabled,
+            hide: !showThemeItems,
             description: isActive
                 ? markup`<span class="fw-bold">${prefix}: ${label}</span><span aria-label="active">✓</span>`
                 : markup`<span>${prefix}: ${label}</span>`,

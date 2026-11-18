@@ -2,8 +2,13 @@
 <odoo>
 
     <!--
-        Apply the saved theme in <head>, before the page is painted, so the
-        backend never flashes the default colours while the JS bundle loads.
+        Apply the theme in <head>, before the page is painted, so the backend
+        never flashes the default colours while the JS bundle loads.
+
+        The mode comes from Odoo's own color_scheme (the value that chose the
+        normal or dark asset bundle for this page), with the color_scheme
+        cookie as a fallback. Light mode always gets the Light palette; dark
+        mode gets the user's dark palette.
     -->
     <template id="webclient_bootstrap_xet_theme" inherit_id="web.webclient_bootstrap">
         <xpath expr="//t[@t-set='head']/script" position="after">
@@ -12,17 +17,19 @@
                     const info = odoo.__session_info__ || {};
                     const pref = info.xet_theme;
                     if (pref) {
-                        let theme = pref;
-                        if (pref === "system") {
-                            theme = window.matchMedia("(prefers-color-scheme: dark)").matches
-                                ? "dark_blue"
-                                : "light";
+                        let mode = "<t t-out="color_scheme or ''"/>";
+                        if (["dark", "light"].indexOf(mode) === -1) {
+                            const cookies = document.cookie.split(";").map(function (c) { return c.trim(); });
+                            mode = cookies.indexOf("color_scheme=dark") === -1 ? "light" : "dark";
                         }
-                        if (["dark_blue", "light", "graphite"].indexOf(theme) === -1) {
-                            theme = "dark_blue";
+                        let theme = "light";
+                        if (mode === "dark") {
+                            theme = ["dark_blue", "graphite"].indexOf(pref) === -1 ? "dark_blue" : pref;
                         }
-                        document.documentElement.dataset.xetThemePref = pref;
-                        document.documentElement.dataset.xetTheme = theme;
+                        const root = document.documentElement;
+                        root.dataset.xetMode = mode;
+                        root.dataset.xetThemePref = pref;
+                        root.dataset.xetTheme = theme;
                     }
                 }
             </script>

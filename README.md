@@ -2,18 +2,22 @@
 
 ## Cel
 
-`hfb_xet_uxui` jest eksperymentalnym modułem (Proof of Concept) sprawdzającym możliwość wprowadzenia trzech motywów graficznych w całym backendzie Odoo 20.0:
+`hfb_xet_uxui` jest eksperymentalnym modułem (Proof of Concept) sprawdzającym możliwość wprowadzenia motywów graficznych w całym backendzie Odoo 20.0.
 
-- **Dark Blue** — granatowe powierzchnie i błękitny akcent; motyw domyślny.
-- **Light** — jasne powierzchnie i niebieski akcent.
-- **Graphite** — grafitowe powierzchnie i turkusowy akcent.
-- **Zgodnie z systemem** — Light albo Dark Blue zależnie od ustawienia jasny/ciemny systemu operacyjnego.
+Tryb jasny / ciemny / systemowy wybiera Odoo (pole „Motyw” w ustawieniach użytkownika, Enterprise) — ładuje on zwykły albo ciemny bundle assetów. Moduł dobiera do niego paletę:
+
+- **Light** — jasne powierzchnie i niebieski akcent; zawsze w trybie jasnym Odoo.
+- **Dark Blue** — granatowe powierzchnie i błękitny akcent; domyślna paleta trybu ciemnego.
+- **Graphite** — grafitowe powierzchnie i turkusowy akcent; alternatywna paleta trybu ciemnego.
+
+Palety są dopasowane do konkretnego bundla: paleta jasna na ciemnym bundlu (i odwrotnie) daje nieczytelny interfejs, dlatego takie połączenie nie jest możliwe.
 
 To punkt wyjścia do dalszego rozwoju, a nie gotowy, produkcyjny system skórek.
 
 ## Zakres prototypu
 
-- pole `xet_theme` na modelu `res.users` (`user_writeable`, edytowalne przez samego użytkownika),
+- pole `xet_theme` na modelu `res.users` — paleta trybu ciemnego (`user_writeable`, edytowalne przez samego użytkownika),
+- odczyt trybu z `color_scheme` Odoo (wartość, która wybrała bundle strony; zapasowo cookie `color_scheme`),
 - metoda RPC `set_xet_theme` zapisująca preferencję bieżącego użytkownika,
 - przekazanie preferencji w `session_info` (bez dodatkowego RPC przy starcie),
 - zastosowanie motywu w `<head>` przed pierwszym renderem (bez mignięcia domyślnych kolorów),
@@ -47,7 +51,9 @@ Aktualizacja modułu z CLI:
 
 ## Używanie
 
-Motyw wybiera się w menu użytkownika (avatar w prawym górnym rogu): pozycje „Theme: …”, aktywna oznaczona znakiem ✓. Zmiana działa od razu — aktualizuje atrybuty `data-xet-theme` (motyw efektywny) i `data-xet-theme-pref` (wybrana preferencja) na elemencie `html` — i zapisuje preferencję w `res.users`. Ten sam wybór jest dostępny w „Moje preferencje”; zmiana tam działa po przeładowaniu strony.
+Tryb jasny / ciemny / systemowy ustawia się w Odoo: „Moje preferencje” → Motyw.
+
+W trybie ciemnym menu użytkownika (avatar w prawym górnym rogu) pokazuje pozycje „Theme: Dark Blue” i „Theme: Graphite”, aktywna oznaczona znakiem ✓. Zmiana działa od razu — aktualizuje atrybuty `data-xet-theme` (motyw efektywny), `data-xet-theme-pref` (wybrana paleta ciemna) i `data-xet-mode` (tryb bundla) na elemencie `html` — i zapisuje preferencję w `res.users`. W trybie jasnym te pozycje są ukryte, bo paleta Light jest stała. Wybór palety ciemnej jest też w „Moje preferencje”; zmiana tam działa po przeładowaniu strony.
 
 Administrator może ustawić motyw dowolnemu użytkownikowi w Ustawienia → Użytkownicy → zakładka Preferencje.
 
@@ -57,6 +63,7 @@ Administrator może ustawić motyw dowolnemu użytkownikowi w Ustawienia → Uż
 hfb_xet_uxui/
 ├── __init__.py
 ├── __manifest__.py
+├── migrations/20.0.1.2.0/pre-migrate.py
 ├── models/
 │   ├── __init__.py
 │   ├── ir_http.py
@@ -77,7 +84,8 @@ hfb_xet_uxui/
 
 - **Python / ORM:** preferencja użytkownika jest przechowywana w `res.users`; `ir.http.session_info` przekazuje ją do klienta.
 - **QWeb (`web.webclient_bootstrap`):** skrypt w `<head>` ustawia motyw przed pierwszym renderem.
-- **JS (`theme.js`):** stan preferencji, rozwiązywanie „Zgodnie z systemem”, zapis przez RPC z wycofaniem przy błędzie.
+- **JS (`theme.js`):** stan preferencji, dobór palety do trybu bundla, zapis przez RPC z wycofaniem przy błędzie.
+- **Migracja 20.0.1.2.0:** dawne wartości `light` i `system` pola `xet_theme` są zamieniane na `dark_blue`.
 - **Menu użytkownika (`user_menuitems`):** pozycje wyboru motywu.
 - **SCSS / CSS variables:** definiuje palety i mapuje je na wybrane elementy backendu.
 - **Asset bundle:** pliki są dołączane do `web.assets_backend`.
