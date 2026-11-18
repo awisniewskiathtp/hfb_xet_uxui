@@ -14,7 +14,7 @@ chmod 664 $(find . -type f)
 # aktualizacja repozytorium
 git add .
 git commit -m "normal commit:: $1"
-git push -u origin main
+git push -u origin 20.0
 #
 # vim: tabstop=4 softtabstop=0 shiftwidth=4 smarttab expandtab fileformat=unix
 #EOF
